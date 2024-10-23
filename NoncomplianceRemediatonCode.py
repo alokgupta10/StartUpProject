@@ -52,58 +52,48 @@ def lambda_handler(event, context):
                 check_s3_bucket_policy(s3_client)
             elif rule == 's3-bucket-ssl-requests-only-conformance-pack-aaplmz7xo':
                 enforce_ssl_requests(s3_client)
-
-        # Handle compliance results from AWS Security Hub
-        compliance_results = event.get('complianceResults', [])
-
-        for result in compliance_results:
-            rule_id = result.get('ruleId')
-            if result.get('complianceType') == 'NON_COMPLIANT':
-                if rule_id == 'securityhub-nacl-no-unrestricted-ssh-rdp-6e2b13b7':
-                    remediate_nacl()
-                elif rule_id == 'securityhub-s3-lifecycle-policy-check-7c887767':
-                    remediate_s3_lifecycle()
-                elif rule_id == 'securityhub-s3-default-encryption-kms-c8534b73':
-                    remediate_s3_default_encryption()
-                elif rule_id == 'securityhub-s3-event-notifications-enabled-2333c5c4':
-                    remediate_s3_event_notifications()
-                elif rule_id == 'securityhub-secretsmanager-rotation-enabled-check-83a003d1':
-                    remediate_secretsmanager_rotation()
-                elif rule_id == 'securityhub-secretsmanager-secret-periodic-rotation-f57fb340':
-                    remediate_secretsmanager_periodic_rotation()
-                elif rule_id == 'securityhub-sns-encrypted-kms-881ece20':
-                    remediate_sns_encryption()
-                elif rule_id == 'securityhub-service-vpc-endpoint-enabled-9e0ff40a':
-                    remediate_vpc_endpoints()
-                elif rule_id == 'securityhub-vpc-default-security-group-closed-9dae2b20':
-                    remediate_vpc_default_security_group()
-
-        # Additionnal compliance related to securityhub
-        if event.get('configRuleName') == 'securityhub-ec2-managedinstance-association-compliance-status-check-068c1c5d':
-            remediate_ec2_ssm(event)
-        elif event.get('configRuleName') == 'securityhub-eip-attached-21e800ac':
-            return remediate_unattached_eips()
-        elif event.get('configRuleName') == 'securityhub-guardduty-eks-protection-runtime-enabled-a79f2d2e':
-            remediate_eks_runtime_protection(event)
-        elif event.get('configRuleName') == 'securityhub-elb-deletion-protection-enabled-72f85c25':
-            return remediate_elb_deletion_protection(event)
-        elif event.get('configRuleName') == 'securityhub-macie-status-check-c447fedd':
-            return remediate_macie_status(event)
-        elif event.get('configRuleName') == 'securityhub-iam-customer-policy-blocked-kms-actions-Oe8ab023':
-            return remediate_kms_actions(event)
-        elif 'securityhub-athena-workgroup-logging-enabled-4529ffdb' in event.get('detail', {}).get('configRuleName', ''):
-            check_athena_logging(event)
-        elif 'securityhub-autoscaling-launch-template-6b37ac5c' in event.get('detail', {}).get('configRuleName', ''):
-            check_launch_template(event)
-        elif 'securityhub-cloud-trail-encryption-enabled-95734ec3' in event.get('detail', {}).get('configRuleName', ''):
-            check_cloudtrail_encryption(event)
-        elif 'securityhub-autoscaling-launchconfig-requires-imdsv2-96f01f87' in event.get('detail', {}).get('configRuleName', ''):
-            check_launch_configuration_imdsv2()
-        elif 'securityhub-cloud-trail-cloud-watch-logs-enabled-1fa0fc24' in event.get('detail', {}).get('configRuleName', ''):
-            check_cloudtrail_logging()
-        elif 'securityhub-cw-loggroup-retention-period-check-5c544a32' in event.get('detail', {}).get('configRuleName', ''):
-            check_log_group_retention()
-
+            elif rule == 'securityhub-nacl-no-unrestricted-ssh-rdp-6e2b13b7':
+                remediate_nacl()
+            elif rule == 'securityhub-s3-lifecycle-policy-check-7c887767':
+                remediate_s3_lifecycle()
+            elif rule == 'securityhub-s3-default-encryption-kms-c8534b73':
+                remediate_s3_default_encryption()
+            elif rule == 'securityhub-s3-event-notifications-enabled-2333c5c4':
+                remediate_s3_event_notifications()
+            elif rule == 'securityhub-secretsmanager-rotation-enabled-check-83a003d1':
+                remediate_secretsmanager_rotation()
+            elif rule == 'securityhub-secretsmanager-secret-periodic-rotation-f57fb340':
+                remediate_secretsmanager_periodic_rotation()
+            elif rule == 'securityhub-sns-encrypted-kms-881ece20':
+                remediate_sns_encryption()
+            elif rule == 'securityhub-service-vpc-endpoint-enabled-9e0ff40a':
+                remediate_vpc_endpoints()
+            elif rule == 'securityhub-vpc-default-security-group-closed-9dae2b20':
+                remediate_vpc_default_security_group()
+            elif rule == 'securityhub-ec2-managedinstance-association-compliance-status-check-068c1c5d':
+                remediate_ec2_ssm(event)
+            elif rule == 'securityhub-eip-attached-21e800ac':
+                return remediate_unattached_eips()
+            elif rule == 'securityhub-guardduty-eks-protection-runtime-enabled-a79f2d2e':
+                remediate_eks_runtime_protection(event)
+            elif rule == 'securityhub-elb-deletion-protection-enabled-72f85c25':
+                return remediate_elb_deletion_protection(event)
+            elif rule == 'securityhub-macie-status-check-c447fedd':
+                return remediate_macie_status(event)
+            elif rule == 'securityhub-iam-customer-policy-blocked-kms-actions-Oe8ab023':
+                return remediate_kms_actions(event)
+            elif rule == 'securityhub-athena-workgroup-logging-enabled-4529ffdb':
+                check_athena_logging(event)
+            elif rule == 'securityhub-autoscaling-launch-template-6b37ac5c':
+                check_launch_template(event)
+            elif rule == 'securityhub-cloud-trail-encryption-enabled-95734ec3':
+                check_cloudtrail_encryption(event)
+            elif rule == 'securityhub-autoscaling-launchconfig-requires-imdsv2-96f01f87':
+                check_launch_configuration_imdsv2()
+            elif rule == 'securityhub-cloud-trail-cloud-watch-logs-enabled-1fa0fc24':
+                check_cloudtrail_logging()
+            elif rule == 'securityhub-cw-loggroup-retention-period-check-5c544a32':
+                check_log_group_retention()
         return {
             'statusCode': 200,
             'body': json.dumps('Remediation processes executed successfully.')
